@@ -1,4 +1,4 @@
-import { db } from "../services/firestore.service";
+import { db } from "./firestore.service";
 import { Task } from "../models/Task";
 
 export class TaskService {
