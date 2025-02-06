@@ -3,33 +3,40 @@ import { User } from "../models/User";
 
 export class UserService {
   static async getUserByEmail(email: string): Promise<User | null> {
-    const snapshot = await db
-      .collection("users")
-      .where("email", "==", email)
-      .get();
+    try {
+      const snapshot = await db
+        .collection("users")
+        .where("email", "==", email)
+        .limit(1)
+        .get();
 
-    if (snapshot.empty) {
-      return null;
+      if (snapshot.empty) return null;
+
+      const userDoc = snapshot.docs[0];
+      return { id: userDoc.id, ...(userDoc.data() as User) };
+    } catch (error) {
+      console.error("Error fetching user by email: ", error);
+      throw new Error("Failed to fetch user by email. Please try again later.");
     }
-
-    const existingUser = snapshot.docs[0];
-    return { id: existingUser.id, ...(existingUser.data() as User) };
   }
 
   static async createUser(user: User): Promise<User> {
-    const newUser = await db.runTransaction(async (transaction) => {
-      const existingUser = await this.getUserByEmail(user.email);
+    try {
+      const newUser = await db.runTransaction(async (transaction) => {
+        const existingUser = await this.getUserByEmail(user.email);
 
-      if (!!existingUser) {
-        return existingUser;
-      }
+        if (!!existingUser) throw new Error("User already exists.");
 
-      const doctRef = db.collection("users").doc();
-      transaction.set(doctRef, user);
+        const doctRef = db.collection("users").doc();
+        transaction.set(doctRef, user);
 
-      return { id: doctRef.id, ...user };
-    });
+        return { id: doctRef.id, ...user };
+      });
 
-    return newUser;
+      return newUser;
+    } catch (error) {
+      console.error("Error creating user: ", error);
+      throw new Error("Failed to create user. Please try again later.");
+    }
   }
 }

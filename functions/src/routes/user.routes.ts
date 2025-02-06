@@ -4,16 +4,29 @@ import {
   validateEmailFromBody,
   validateEmailFromParams,
 } from "../middlewares/validateEmail";
+import jwt from "jsonwebtoken";
 
 const router = Router();
 
 router.get("/:email", validateEmailFromParams, async (req, res, next) => {
   try {
-    console.log(req.params.email);
     const email = (req.params.email as string).trim().toLowerCase();
     const user = await UserService.getUserByEmail(email);
 
-    res.status(200).json(user);
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.status(200).json({ jwt: token, user });
   } catch (error) {
     next(error);
   }
@@ -30,7 +43,15 @@ router.post("/", validateEmailFromBody, async (req, res, next) => {
 
     const user = await UserService.createUser({ email });
 
-    res.status(200).json(user);
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.status(200).json({ jwt: token, user });
   } catch (error) {
     next(error);
   }

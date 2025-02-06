@@ -1,7 +1,8 @@
 export interface Task {
-  id?: string;
+  id: string;
   title: string;
   description: string;
-  createdAt: FirebaseFirestore.Timestamp;
+  createdAt: string;
+  userId: string;
   completed: boolean;
 }
