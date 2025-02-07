@@ -15,13 +15,14 @@ This is the backend API for the Todo App, handling user authentication and task 
 
 Base URL: `https://us-central1-atom-todo-app-65966.cloudfunctions.net/api`
 
-| Method | Endpoint    | Description       | Auth Required |
-| ------ | ----------- | ----------------- | ------------- |
-| POST   | /auth/login | Log in with email | ❌            |
-| GET    | /tasks      | Get user tasks    | ✅            |
-| POST   | /tasks      | Create a new task | ✅            |
-| PUT    | /tasks/{id} | Update a task     | ✅            |
-| DELETE | /tasks/{id} | Delete a task     | ✅            |
+| Method | Endpoint        | Description       | Auth Required |
+| ------ | --------------- | ----------------- | ------------- |
+| GET    | /users/{email}  | Log in with email | ❌            |
+| POST   | /users          | Create new user   | ❌            |
+| GET    | /tasks          | Get user tasks    | ✅            |
+| POST   | /tasks          | Create a new task | ✅            |
+| PUT    | /tasks/{taskId} | Update a task     | ✅            |
+| DELETE | /tasks/{taskId} | Delete a task     | ✅            |
 
 ## 🛠 Built With
 
@@ -30,6 +31,13 @@ Base URL: `https://us-central1-atom-todo-app-65966.cloudfunctions.net/api`
 - **TypeScript** - Strongly typed JavaScript
 - **Firestore** - NoSQL database for storing tasks and users
 - **JWT Authentication** - Secure user sessions
+
+## 🏗 Design Decisions
+
+- **Express + TypeScript** was chosen instead of NestJS for simplicity.
+- **Layered architecture** (`controllers (routes)`, `services`, `middlewares`) ensures maintainability.
+- **Firestore instead of SQL** for a serverless and flexible data structure.
+- **JWT instead of sessions** for scalable authentication.
 
 ## ✅ Features
 
