@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import {Request, Response, NextFunction} from "express";
 import validator from "validator";
 
 export const validateEmailFromParams = (
@@ -9,7 +9,7 @@ export const validateEmailFromParams = (
   const email = req.params.email as string;
 
   if (!validator.isEmail(email)) {
-    res.status(400).json({ error: "Email is not valid" });
+    res.status(400).json({error: "Email is not valid"});
     return;
   }
 
@@ -24,7 +24,7 @@ export const validateEmailFromBody = (
   const email = req.body.email as string;
 
   if (!validator.isEmail(email)) {
-    res.status(400).json({ error: "Email is not valid" });
+    res.status(400).json({error: "Email is not valid"});
     return;
   }
 

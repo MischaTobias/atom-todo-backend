@@ -1,7 +1,14 @@
-import { db } from "./firestore.service";
-import { Task } from "../models/Task";
+import {db} from "./firestore.service";
+import {Task} from "../models/Task";
 
+/**
+ *
+ */
 export class TaskService {
+  /**
+   *
+   * @param {string} userId
+   */
   static async getTasksByUserId(userId: string): Promise<Task[]> {
     try {
       const snapshot = await db
@@ -28,6 +35,11 @@ export class TaskService {
     }
   }
 
+  /**
+   *
+   * @param {string} userId
+   * @param {Task}task
+   */
   static async createTask(userId: string, task: Task): Promise<Task> {
     try {
       task.userId = userId;
@@ -47,6 +59,11 @@ export class TaskService {
     }
   }
 
+  /**
+   *
+   * @param {Task} task
+   * @param {string} userId
+   */
   static async updateTask(task: Task, userId: string): Promise<Task> {
     try {
       const updatedTask = await db.runTransaction(async (transaction) => {
@@ -58,13 +75,13 @@ export class TaskService {
 
         const existingTask = taskDoc.data() as Task;
 
-        if (existingTask.userId !== userId)
+        if (existingTask.userId !== userId) {
           throw new Error("Task does not belong to user.");
+        }
 
-        transaction.update(docRef, { ...task });
+        transaction.update(docRef, {...task});
 
-        const updatedTaskDoc = await transaction.get(docRef);
-        return updatedTaskDoc.data() as Task;
+        return task;
       });
 
       return updatedTask;
@@ -74,6 +91,11 @@ export class TaskService {
     }
   }
 
+  /**
+   *
+   * @param {string} taskId
+   * @param {string} userId
+   */
   static async deleteTask(taskId: string, userId: string): Promise<void> {
     try {
       await db.runTransaction(async (transaction) => {
@@ -85,8 +107,9 @@ export class TaskService {
 
         const existingTask = taskDoc.data() as Task;
 
-        if (existingTask.userId !== userId)
+        if (existingTask.userId !== userId) {
           throw new Error("Task does not belong to user.");
+        }
 
         transaction.delete(docRef);
       });

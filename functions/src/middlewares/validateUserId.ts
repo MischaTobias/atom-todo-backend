@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import {Request, Response, NextFunction} from "express";
 import jwt from "jsonwebtoken";
 
 export const validateUserId = (
@@ -6,19 +6,28 @@ export const validateUserId = (
   res: Response,
   next: NextFunction
 ): void => {
-  const token = req.headers["authorization"]?.split(" ")[1] as string;
-  const decodedToken = jwt.verify(
-    token,
-    process.env.JWT_SECRET as string
-  ) as any;
-  const userId = decodedToken.userId;
+  try {
+    const token = req.headers["authorization"]?.split(" ")[1] as string;
+    if (!token) {
+      res.status(401).json({error: "Token is required"});
+    }
 
-  if (!userId) {
-    res.status(400).json({ error: "User ID is required" });
-    return;
+    const decodedToken = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as any;
+
+    if (!decodedToken.userId) {
+      res.status(401).json({error: "User ID is required"});
+    }
+
+    req.userId = decodedToken.userId;
+    next();
+  } catch (err: any) {
+    if (err.name === "TokenExpiredError") {
+      res.status(401).json({error: "JWT expired"});
+    } else {
+      res.status(401).json({error: "Invalid token"});
+    }
   }
-
-  req.userId = userId;
-
-  next();
 };

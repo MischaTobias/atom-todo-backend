@@ -3,12 +3,12 @@ import express from "express";
 import cors from "cors";
 import taskRoutes from "./routes/task.routes";
 import userRoutes from "./routes/user.routes";
-import { errorHandler } from "./middlewares/errorHandler";
+import {errorHandler} from "./middlewares/errorHandler";
 
 const app = express();
 
 // Middlewares
-app.use(cors({ origin: true }));
+app.use(cors({origin: true}));
 app.use(express.json());
 
 // Routes

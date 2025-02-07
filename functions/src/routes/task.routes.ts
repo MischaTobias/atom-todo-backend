@@ -1,8 +1,9 @@
-import { Router } from "express";
-import { TaskService } from "../services/task.service";
-import { validateUserId } from "../middlewares/validateUserId";
-import { Task } from "../models/Task";
+import {Router} from "express";
+import {TaskService} from "../services/task.service";
+import {validateUserId} from "../middlewares/validateUserId";
+import {Task} from "../models/Task";
 
+// eslint-disable-next-line new-cap
 const router = Router();
 
 router.get("/", validateUserId, async (req, res, next) => {
@@ -30,7 +31,7 @@ router.post("/", validateUserId, async (req, res, next) => {
 router.put("/:taskId", validateUserId, async (req, res, next) => {
   try {
     const userId = req.userId as string;
-    const task = req.body.task as Task;
+    const task = req.body as Task;
 
     const updatedTask = await TaskService.updateTask(task, userId);
 
