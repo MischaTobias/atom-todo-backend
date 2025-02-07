@@ -6,6 +6,7 @@ This is the backend API for the Todo App, handling user authentication and task 
 
 - [API Documentation](#api-documentation)
 - [Built With](#built-with)
+- [Design Decisions](#-design-decisions)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
